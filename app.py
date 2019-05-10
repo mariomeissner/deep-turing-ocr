@@ -2,8 +2,8 @@ import json
 import os
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
-from backend.model import create_model
-from backend.tools import label_to_text, get_boxes
+from model.model import create_model
+from model.tools import label_to_text, get_boxes
 from PIL import Image
 import numpy as np
 import tensorflow as tf
@@ -20,11 +20,11 @@ cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
 print("Loading the model...")
-with open("backend/params.json", "r") as file:
+with open("model/params.json", "r") as file:
     params = json.load(file)
 model, decoders = create_model(params, gpu=False)
 decoder = decoders[0]
-model.load_weights("backend/weights.h5")
+model.load_weights("model/weights.h5")
 
 # A tensor where all values are the same, is required by ctc loss
 ctc_input_length = (
