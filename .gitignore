@@ -1,6 +1,8 @@
 .vscode
 .ipynb_checkpoints
-*__pycache__*/*
+__pycache__
+model/__pycache__
+model/__pycache__
 jsconfig.json
 data
 dataset
