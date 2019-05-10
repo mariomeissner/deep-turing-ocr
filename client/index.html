@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"
+        integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous">
+        </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible">
+    <script src="script.js"></script>
+    <title>Turing Parser</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class='main'>
+        <div id='image-col'>
+            <img id="crop" src="#" alt="Crop">
+        </div>
+        <div id='working-col'>
+            <div>
+                <input type='file' onclick="loadAnimation()" onchange="loadImage()" />
+                <div class="lds-ellipsis" id='loader'>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <br>
+            <button class='button' id='get_boxes' onclick="printBoxes()">Get
+                Boxes</button>
+            <button class='button' id='get_lines' onclick="predictLines()">Get
+                Line Preds</button>
+            <button class='button' id="save-dataset" onclick="saveDataset()">Save Dataset</button>
+            <button class='button' id="append-lines" onclick="appendLines()">Append Lines to File</button>
+            <button class='button' id='clear' onclick="clearAll()">Clear</button>
+            <br>
+            <div id="lines-box"></div>
+        </div>
+    </div>
+</body>
+
+</html>

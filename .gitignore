@@ -1,0 +1,8 @@
+.vscode
+.ipynb_checkpoints
+*__pycache__*/*
+jsconfig.json
+data
+dataset
+turingFiles
+scripts

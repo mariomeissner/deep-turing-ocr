@@ -1,0 +1,35 @@
+# Image utilities
+opencv-contrib-python
+pillow
+pytesseract
+imutils
+
+
+# Tensor processing
+numpy
+
+
+# Machine Learning
+keras
+tensorflow
+sklearn
+
+
+# HTML parsing
+beautifulsoup4
+
+
+# Web server
+flask
+flask-cors
+
+
+# Evaluation metric
+editdistance
+
+
+# Visualization
+matplotlib
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTU1MjE5ODIxM119
+-->
