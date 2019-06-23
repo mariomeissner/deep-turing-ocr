@@ -23,8 +23,8 @@ print("Loading the model...")
 with open("model/params.json", "r") as file:
     params = json.load(file)
 model, decoders = create_model(params, gpu=False)
-decoder = decoders[0]
 model.load_weights("model/weights.h5")
+decoder = decoders[0]
 
 # A tensor where all values are the same, is required by ctc loss
 ctc_input_length = (
@@ -70,8 +70,10 @@ def predict_lines():
     for (x, y, x2, y2) in box_coords:
         crop = img.crop((x, y, x2, y2))
         crop = crop.resize((params["img_w"], params["img_h"]), Image.ANTIALIAS)
-        crop = np.array(crop).T / 255  # Adapt to model input requirements
-        image_arrays.append(np.array(crop))
+        # Preprocessing
+        crop = np.array(crop).T / 255
+        crop = 1 - crop
+        image_arrays.append(crop)
 
     images = np.array(image_arrays)
     images = np.expand_dims(images, axis=3)  # Add shallow channel dimension
@@ -80,9 +82,12 @@ def predict_lines():
     prediction_strings = []
 
     for prediction in predictions:
-        prediction = list(np.squeeze(prediction))
-        pred_string = label_to_text(prediction)
-        prediction_strings.append(pred_string)
+        try:
+            prediction = list(np.squeeze(prediction))
+            pred_string = label_to_text(prediction)
+            prediction_strings.append(pred_string)
+        except TypeError:
+            print("Model didn't return a sequence.")
 
     return json.dumps(prediction_strings)
 
