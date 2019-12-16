@@ -15,9 +15,9 @@
   ],
   "pool_size": 2,
   "time_dense_size": 64,
-  "rnn1_size": 156,
-  "rnn2_size": 256,
+  "rnn1_size": 128,
+  "rnn2_size": 128,
   "ctc_cut": 2,
-  "output_size": 25,
+  "output_size": 33,
   "act": "relu"
 }

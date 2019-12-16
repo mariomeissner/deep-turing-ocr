@@ -1,12 +1,12 @@
 from keras.layers import Input, Dense, Activation, Dropout
 from keras.layers import Reshape, Lambda
 from keras.layers import add, GRU, CuDNNGRU
-from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D, concatenate
 from keras.models import Model
 import keras.backend as K
 
 
-def create_model(params, gpu=False):
+def create_model(params, gpu=False, two_rnns=False):
 
     input_data = Input(name="input", shape=params["input_shape"], dtype="float32")
     conv1 = Conv2D(
@@ -89,16 +89,49 @@ def create_model(params, gpu=False):
         )(inner)
 
     gru1_merged = add([gru_1, gru_1b])
-    # gru_2 =  GRU(rnn2_size, return_sequences=True,
-    #             kernel_initializer='he_normal',   name='gru2')(gru1_merged)
-    # gru_2b = GRU(rnn2_size, return_sequences=True, go_backwards=True,
-    #             kernel_initializer='he_normal', name='gru2_b')(gru1_merged)
+    if two_rnns:
+        if gpu:
+            gru_2 = CuDNNGRU(
+                params["rnn2_size"],
+                return_sequences=True,
+                kernel_initializer="he_normal",
+                name="gru2",
+            )(gru1_merged)
+            gru_2b = CuDNNGRU(
+                params["rnn2_size"],
+                return_sequences=True,
+                go_backwards=True,
+                kernel_initializer="he_normal",
+                name="gru2_b",
+            )(gru1_merged)
+        else:
+            gru_2 = GRU(
+                params["rnn2_size"],
+                return_sequences=True,
+                kernel_initializer="he_normal",
+                name="gru2",
+                reset_after=True,
+                recurrent_activation="sigmoid",
+            )(gru1_merged)
+            gru_2b = GRU(
+                params["rnn2_size"],
+                return_sequences=True,
+                go_backwards=True,
+                kernel_initializer="he_normal",
+                name="gru2_b",
+                reset_after=True,
+                recurrent_activation="sigmoid",
+            )(gru1_merged)
 
     # transforms RNN output to character activations:
-    inner = Dense(params["output_size"], kernel_initializer="he_normal", name="dense2")(
-        #       concatenate([gru_2, gru_2b])
-        gru1_merged
-    )
+    if two_rnns:
+        inner = Dense(
+            params["output_size"], kernel_initializer="he_normal", name="dense2"
+        )(concatenate([gru_2, gru_2b]))
+    else:
+        inner = Dense(
+            params["output_size"], kernel_initializer="he_normal", name="dense2"
+        )(gru1_merged)
 
     y_pred = Activation("softmax", name="softmax")(inner)
     output_labels = Input(
